@@ -1,0 +1,4 @@
+FROM openjdk:21-jdk
+MAINTAINER Kuba2412
+COPY target/PatientApp-0.0.1-SNAPSHOT.jar PatientApp.jar
+ENTRYPOINT ["java", "-jar", "PatientApp.jar"]
