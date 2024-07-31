@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -25,9 +26,11 @@ public class PatientController {
             @ApiResponse(responseCode = "404", description = "Patient not found")
     })
     @GetMapping("/{email}/visits")
-    public List<VisitDTO> getVisitsByPatientEmail(@PathVariable("email") String email) {
+    public List<VisitDTO> getVisitsByPatientEmail(@PathVariable String email) {
         return patientClient.getVisitsByPatientEmail(email);
     }
+
+
 
     @Operation(summary = "Register patient for a visit")
     @ApiResponses(value = {
@@ -36,8 +39,9 @@ public class PatientController {
             @ApiResponse(responseCode = "400", description = "Invalid input data")
     })
     @PostMapping("/visits/{visitId}/register")
-    public void registerPatientForVisit(@PathVariable("visitId") Long visitId, @RequestParam("email") String email) {
+    public ResponseEntity<Void> registerPatientForVisit(@PathVariable Long visitId, @RequestParam String email) {
         patientClient.registerPatientForVisit(visitId, email);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Get visits by doctor ID")
@@ -46,7 +50,7 @@ public class PatientController {
             @ApiResponse(responseCode = "404", description = "Doctor not found")
     })
     @GetMapping("/doctors/{doctorId}/visits")
-    public List<VisitDTO> getVisitsByDoctorId(@PathVariable("doctorId") Long doctorId) {
+    public List<VisitDTO> getVisitsByDoctorId(@PathVariable Long doctorId) {
         return patientClient.getVisitsByDoctorId(doctorId);
     }
 
@@ -58,7 +62,7 @@ public class PatientController {
     @GetMapping("/doctors/specialization/{specialization}/available-dates")
     public List<VisitDTO> getAvailableVisitsByDoctorSpecializationAndByDate(
             @PathVariable("specialization") String specialization,
-        @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return patientClient.getAvailableVisitsByDoctorSpecializationAndByDate(specialization, date);
     }
 }

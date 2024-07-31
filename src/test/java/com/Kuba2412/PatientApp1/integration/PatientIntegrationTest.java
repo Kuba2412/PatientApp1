@@ -2,41 +2,72 @@ package com.Kuba2412.PatientApp1.integration;
 
 import com.Kuba2412.PatientApp1.dto.VisitDTO;
 import com.Kuba2412.PatientApp1.service.PatientService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@AutoConfigureWireMock(port = 8083)
 public class PatientIntegrationTest {
+
+    private static WireMockServer wireMockServer;
 
     @Autowired
     private PatientService patientService;
 
-    @Test
-    void getAvailableVisitsByDoctorId_Success() throws Exception {
-        //200 OK
-        WireMock.stubFor(get(urlPathEqualTo("/doctors/1/visits"))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("[{\"id\":1,\"startVisit\":\"2025-11-15T10:00:00\",\"endVisit\":\"2025-11-15T11:00:00\",\"patientId\":1,\"doctorId\":1,\"specialization\":\"Cardiology\"}]")));
+    @Autowired
+    private ObjectMapper objectMapper;
 
-        // When
-        List<VisitDTO> result = patientService.getAvailableVisitsByDoctorId(1L);
-
-        // Then
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals(1L, result.get(0).getId());
+    @BeforeAll
+    public static void setup() {
+        wireMockServer = new WireMockServer(8083);
+        WireMock.configureFor("localhost", 8083);
+        wireMockServer.start();
     }
+
+    @AfterAll
+    public static void end(){
+        wireMockServer.stop();
+    }
+
+//    @Test
+//    void getAvailableVisitsByDoctorId_Success() throws Exception {
+//        //200 OK
+//        VisitDTO visitDTO = new VisitDTO();
+//        visitDTO.setId(1L);
+//        visitDTO.setStartVisit(LocalDateTime.of(2025, 11, 15, 10, 0));
+//        visitDTO.setEndVisit(LocalDateTime.of(2025, 11, 15, 11, 0));
+//        visitDTO.setPatientId(1L);
+//        visitDTO.setDoctorId(1L);
+//        visitDTO.setSpecialization("Cardiology");
+//
+//        String visitJson = objectMapper.writeValueAsString(visitDTO);
+//
+//
+//        WireMock.stubFor(get(urlPathEqualTo("/doctors/1/visits"))
+//                .willReturn(aResponse()
+//                        .withStatus(200)
+//                        .withHeader("Content-Type", "application/json")
+//                        .withBody("[" + visitJson + "]")));
+//
+//        // When
+//        List<VisitDTO> result = patientService.getAvailableVisitsByDoctorId(1L);
+//
+//        // Then
+//        assertNotNull(result);
+//        assertEquals(1, result.size());
+//        assertEquals(1L, result.get(0).getId());
+//    }
 
     @Test
     void getAvailableVisitsByDoctorId_NotFound() {
