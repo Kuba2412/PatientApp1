@@ -40,35 +40,6 @@ public class PatientIntegrationTest {
         wireMockServer.stop();
     }
 
-//    @Test
-//    void getAvailableVisitsByDoctorId_Success() throws Exception {
-//        //200 OK
-//        VisitDTO visitDTO = new VisitDTO();
-//        visitDTO.setId(1L);
-//        visitDTO.setStartVisit(LocalDateTime.of(2025, 11, 15, 10, 0));
-//        visitDTO.setEndVisit(LocalDateTime.of(2025, 11, 15, 11, 0));
-//        visitDTO.setPatientId(1L);
-//        visitDTO.setDoctorId(1L);
-//        visitDTO.setSpecialization("Cardiology");
-//
-//        String visitJson = objectMapper.writeValueAsString(visitDTO);
-//
-//
-//        WireMock.stubFor(get(urlPathEqualTo("/doctors/1/visits"))
-//                .willReturn(aResponse()
-//                        .withStatus(200)
-//                        .withHeader("Content-Type", "application/json")
-//                        .withBody("[" + visitJson + "]")));
-//
-//        // When
-//        List<VisitDTO> result = patientService.getAvailableVisitsByDoctorId(1L);
-//
-//        // Then
-//        assertNotNull(result);
-//        assertEquals(1, result.size());
-//        assertEquals(1L, result.get(0).getId());
-//    }
-
     @Test
     void getAvailableVisitsByDoctorId_NotFound() {
         //404 Not Found

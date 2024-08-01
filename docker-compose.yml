@@ -2,9 +2,9 @@ version: '3.8'
 services:
   medicalclinic:
     container_name: medicalclinic
-    image: medicalclinic-medicalclinic
+    image: medicalclinic-image
     ports:
-      - "8080:8080"
+      - "8088:8088"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/test
       SPRING_DATASOURCE_USERNAME: user
@@ -21,9 +21,9 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8081:8081"
+      - "8082:8082"
     environment:
-      SPRING_CLOUD_OPENFEIGN_CLIENT_CONFIG_MEDICALCLINIC_URL: http://medicalclinic:8080
+      SPRING_CLOUD_OPENFEIGN_CLIENT_CONFIG_MEDICALCLINIC_URL: http://medicalclinic:8088
     networks:
       - backend
 
